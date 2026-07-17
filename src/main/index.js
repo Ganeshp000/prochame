@@ -37,7 +37,8 @@ app.whenReady().then(() => {
   // 5. Register global shortcut hotkeys
   ShortcutsManager.registerAll({
     onAssist: () => IpcRouter.executeMode('assist', ''),
-    onCodeSolve: () => IpcRouter.executeMode('code', '')
+    onCodeSolve: () => IpcRouter.executeMode('code', ''),
+    onQuickAssist: () => IpcRouter.ensureListeningAndAssist()
   });
 
   app.on('activate', () => {

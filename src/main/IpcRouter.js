@@ -181,6 +181,17 @@ class IpcRouter {
       this.isLlmBusy = false;
     }
   }
+
+  ensureListeningAndAssist() {
+    if (!MediaCapture.isListening) {
+      const active = MediaCapture.toggleListening(true);
+      if (active) {
+        this.startTranscriptionLoop();
+      }
+      WindowManager.send('capture:state', { active });
+    }
+    this.executeMode('assist', '');
+  }
 }
 
 module.exports = new IpcRouter();

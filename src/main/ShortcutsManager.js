@@ -17,6 +17,13 @@ class ShortcutsManager {
       });
     }
 
+    // Tradeoff: Overrides the system default command (Cmd+V / paste) while Prochame is active.
+    if (handlers.onQuickAssist) {
+      globalShortcut.register('CommandOrControl+V', () => {
+        handlers.onQuickAssist();
+      });
+    }
+
     globalShortcut.register('CommandOrControl+Shift+X', () => {
       app.quit();
     });
