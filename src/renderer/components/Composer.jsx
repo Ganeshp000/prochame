@@ -40,7 +40,7 @@ export default function Composer({ userText, setUserText, isSmart, onToggleSmart
         <textarea
           ref={textareaRef}
           rows="1"
-          placeholder="Ask a question... (⌘+Enter for Assist)"
+          placeholder="Ask a question... (Cmd+Enter for Assist)"
           value={userText}
           onChange={(e) => setUserText(e.target.value)}
           onKeyDown={handleKeyDown}

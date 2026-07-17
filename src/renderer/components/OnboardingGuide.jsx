@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 const ONBOARD_STEPS = [
   {
-    icon: '🚀',
+    icon: '1',
     title: 'Welcome to Prochame',
     body: 'Prochame is a private overlay copilot that floats on your screen. It can review your screen, listen to calls, and assist with real-time advice or coding suggestions while staying hidden from screen shares.'
   },
   {
-    icon: '🛡️',
+    icon: '2',
     title: 'Configure Permissions',
     body: 'To enable capture features, Prochame requires standard macOS permissions. If prompted, please click Allow, or toggle them manually in System Settings.',
     buttons: [
@@ -16,19 +16,19 @@ const ONBOARD_STEPS = [
     ]
   },
   {
-    icon: '🔑',
+    icon: '3',
     title: 'Add API Credentials',
     body: 'Prochame connects directly to your own OpenAI, Anthropic, or Google Gemini keys so you only pay for what you use. Enter your credentials in preferences to start.'
   },
   {
-    icon: '🫥',
+    icon: '4',
     title: 'Zoom Invisibility',
-    body: 'Prochame is automatically hidden in Google Meet and Microsoft Teams. For Zoom, go to Zoom Settings → Share Screen → Advanced and choose "Advanced capture with window filtering" to protect overlay privacy.'
+    body: 'Prochame is automatically hidden in Google Meet and Microsoft Teams. For Zoom, go to Zoom Settings > Share Screen > Advanced and choose "Advanced capture with window filtering" to protect overlay privacy.'
   },
   {
-    icon: '⌨️',
+    icon: '5',
     title: 'Shortcut Reference',
-    body: 'Trigger Prochame from anywhere using your keyboard: \n• ⌘ + Enter — Trigger Assist\n• ⌘ + H — Solve screen contents\n• ⌘ + Shift + X — Quit application'
+    body: 'Trigger Prochame from anywhere using your keyboard: \n- Cmd + Enter -- Trigger Assist\n- Cmd + H -- Solve screen contents\n- Cmd + Shift + X -- Quit application'
   }
 ];
 
