@@ -26,6 +26,24 @@ Built from scratch using a modular Node.js/Electron main architecture and a mode
 - **Solve Code** (`⌘` `H`): Screenshots a programming problem on screen, analyzes the strategy, writes the clean code block, and presents time/space complexities.
 - **Ask Anything**: Enter a typed query into the composer box to query the screen or transcription log.
 
+## ⚠️ Disclaimer — Please Read Before Use
+
+**Prochame's screen-invisibility is best-effort, not guaranteed.** It relies on macOS Content Protection APIs (`setContentProtection`) and window-level flags that work with most built-in screen sharing and recording tools (Zoom, Google Meet, Microsoft Teams, QuickTime, OBS window-capture). However, some capture methods — including phone cameras pointed at your screen, certain third-party proctoring software, HDMI capture cards, and full-display OBS captures — **can still see the overlay.** Do not rely on invisibility as a certainty.
+
+**This tool is intended exclusively for legitimate, ethical purposes:**
+- Personal study and self-practice (e.g., reviewing flashcards, drilling problems solo)
+- Accessibility assistance (e.g., real-time captioning, cognitive aids)
+- Professional productivity during your own solo work
+- Learning and experimentation with AI-assisted workflows
+
+**You must NOT use Prochame to:**
+- Cheat on proctored exams, certifications, or academic assessments
+- Gain an unfair advantage during job interviews or hiring screens
+- Violate any platform's Terms of Service or community guidelines
+- Record, transcribe, or surveil others without their knowledge and consent, in violation of applicable privacy or wiretapping laws
+
+**You are solely responsible for how you use this software.** The developer(s) provide it as-is under the MIT License and accept no liability for misuse. By using Prochame, you agree to comply with all applicable laws, institutional policies, and platform rules in your jurisdiction.
+
 ---
 
 ## Setup & Installation
