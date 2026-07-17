@@ -5,11 +5,14 @@ const path = require('path');
 const { app } = require('electron');
 
 class TranscriptionService {
-  async transcribe(pcmBuffer, provider, apiKey) {
+  async transcribe(pcmBuffer, provider, apiKey, sourceChannel = 'unknown') {
     if (!pcmBuffer || pcmBuffer.length === 0) return '';
     
+    const rms = this.calculateRms(pcmBuffer);
+    console.log(`[TranscriptionService] Channel "${sourceChannel}" chunk RMS level = ${rms.toFixed(2)} (Gate threshold = 250)`);
+
     // Silence gate: skip transcribing dead air
-    if (this.calculateRms(pcmBuffer) < 250) {
+    if (rms < 250) {
       return '';
     }
 

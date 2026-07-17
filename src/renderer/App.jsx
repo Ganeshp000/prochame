@@ -143,10 +143,18 @@ export default function App() {
 
   const startAudioCapture = async () => {
     try {
+      console.log('[App] Attempting getUserMedia for microphone...');
       // Setup microphone stream (mono, downsampled to 16 kHz)
       micStream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 }
       });
+      console.log('[App] getUserMedia resolved successfully');
+      const micTracks = micStream.getAudioTracks();
+      console.log(`[App] Found ${micTracks.length} mic track(s)`);
+      micTracks.forEach((track, index) => {
+        console.log(`[App] Mic Track ${index}: kind=${track.kind}, label=${track.label}, enabled=${track.enabled}`);
+      });
+
       audioCtx = new AudioContext({ sampleRate: 16000 });
       micNode = audioCtx.createMediaStreamSource(micStream);
       micProcessor = audioCtx.createScriptProcessor(4096, 1, 1);
@@ -158,8 +166,20 @@ export default function App() {
       micProcessor.connect(micGain);
       micGain.connect(audioCtx.destination);
 
+      let micProcessCount = 0;
       micProcessor.onaudioprocess = (e) => {
         const input = e.inputBuffer.getChannelData(0);
+        let sum = 0;
+        for (let i = 0; i < input.length; i++) {
+          sum += input[i] * input[i];
+        }
+        const rms = Math.sqrt(sum / input.length);
+        
+        micProcessCount++;
+        if (micProcessCount % 40 === 0) {
+          console.log(`[App] onaudioprocess fired for mic channel. RMS volume = ${rms.toFixed(5)}`);
+        }
+
         const output = new Int16Array(input.length);
         for (let i = 0; i < input.length; i++) {
           const s = Math.max(-1, Math.min(1, input[i]));
@@ -168,13 +188,22 @@ export default function App() {
         prochame.sendAudioChunk('user', output.buffer);
       };
 
+      console.log('[App] Attempting getDisplayMedia for loopback audio...');
       // Setup system output loopback capture
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      console.log('[App] getDisplayMedia resolved successfully');
       stream.getVideoTracks().forEach(track => track.stop()); // Stop video track
       const audioTracks = stream.getAudioTracks();
+      console.log(`[App] Found ${audioTracks.length} audio track(s)`);
+      audioTracks.forEach((track, index) => {
+        console.log(`[App] Track ${index}: kind=${track.kind}, label=${track.label}, enabled=${track.enabled}, readyState=${track.readyState}`);
+      });
       
       if (audioTracks.length === 0) {
-        prochame.log('System Audio Loopback: Unsupported in this capture context.');
+        console.warn('[App] Loopback audio tracks array is empty.');
+        prochame.log('System Audio Loopback: Unsupported or Screen Recording permission is missing.');
+        setStatusMessage('System audio Loopback unsupported — check Screen Recording permissions in System Settings.');
+        setTimeout(() => setStatusMessage(''), 10000);
         stream.getTracks().forEach(t => t.stop());
         return;
       }
@@ -191,8 +220,20 @@ export default function App() {
       sysProcessor.connect(sysGain);
       sysGain.connect(sysCtx.destination);
 
+      let processCount = 0;
       sysProcessor.onaudioprocess = (e) => {
         const input = e.inputBuffer.getChannelData(0);
+        let sum = 0;
+        for (let i = 0; i < input.length; i++) {
+          sum += input[i] * input[i];
+        }
+        const rms = Math.sqrt(sum / input.length);
+        
+        processCount++;
+        if (processCount % 40 === 0) {
+          console.log(`[App] onaudioprocess fired for system channel. RMS volume = ${rms.toFixed(5)}`);
+        }
+
         const output = new Int16Array(input.length);
         for (let i = 0; i < input.length; i++) {
           const s = Math.max(-1, Math.min(1, input[i]));
@@ -203,7 +244,10 @@ export default function App() {
 
       prochame.log('Audio capture initialized successfully.');
     } catch (err) {
+      console.error('[App] getDisplayMedia error:', err);
       prochame.log(`Audio Capture Error: ${err.message}`);
+      setStatusMessage(`Audio Capture Error: ${err.message}`);
+      setTimeout(() => setStatusMessage(''), 10000);
       setIsListening(false);
       prochame.toggleListening();
     }

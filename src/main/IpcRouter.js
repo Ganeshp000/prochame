@@ -162,7 +162,7 @@ class IpcRouter {
         return;
       }
 
-      const text = await TranscriptionService.transcribe(pcm, sttProvider, sttApiKey);
+      const text = await TranscriptionService.transcribe(pcm, sttProvider, sttApiKey, source);
       if (text && text.trim()) {
         const turn = {
           sender: source === 'user' ? 'user' : 'system',
