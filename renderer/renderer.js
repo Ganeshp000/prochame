@@ -1,7 +1,7 @@
-/* chaaya renderer — UI state, mic capture, IPC, streaming render. */
+/* prochame renderer — UI state, mic capture, IPC, streaming render. */
 (function () {
   const { icon } = window.ICONS;
-  const chaaya = window.chaaya; // exposed by preload
+  const prochame = window.prochame; // exposed by preload
   const $ = (s) => document.querySelector(s);
 
   // ---- paint icons -------------------------------------------------------
@@ -91,7 +91,7 @@
   function runMode(mode, text) {
     if (busy) return;
     setBusy(true);
-    chaaya.ask({ mode, text: text || '' });
+    prochame.ask({ mode, text: text || '' });
   }
 
   document.querySelectorAll('.act').forEach((btn) => {
@@ -129,7 +129,7 @@
   smartBtn.addEventListener('click', async () => {
     settings.smart = !settings.smart;
     smartBtn.classList.toggle('on', settings.smart);
-    await chaaya.settingsSet({ smart: settings.smart });
+    await prochame.settingsSet({ smart: settings.smart });
   });
 
   // Hide / collapse
@@ -144,7 +144,7 @@
   $('#stop-btn').addEventListener('click', () => {
     const turningOn = !$('#stop-btn').classList.contains('active');
     if (turningOn) startSystemAudio();
-    chaaya.captureToggle();
+    prochame.captureToggle();
   });
 
   // ---- capture: mic (renderer side) --------------------------------------
@@ -162,10 +162,10 @@
         const f = e.inputBuffer.getChannelData(0);
         const out = new Int16Array(f.length);
         for (let i = 0; i < f.length; i++) { const s = Math.max(-1, Math.min(1, f[i])); out[i] = s < 0 ? s * 0x8000 : s * 0x7fff; }
-        chaaya.micPcm(out.buffer);
+        prochame.micPcm(out.buffer);
       };
     } catch (err) {
-      chaaya.log('mic error: ' + (err && err.message));
+      prochame.log('mic error: ' + (err && err.message));
     }
   }
   function stopMic() {
@@ -175,7 +175,7 @@
     if (micStream) { micStream.getTracks().forEach((t) => t.stop()); micStream = null; }
   }
 
-  // ---- capture: system/meeting audio (getDisplayMedia loopback, in chaaya's process) ----
+  // ---- capture: system/meeting audio (getDisplayMedia loopback, in prochame's process) ----
   let sysStream = null, sysCtx = null, sysNode = null, sysProc = null;
   async function startSystemAudio() {
     if (sysStream) return;
@@ -183,7 +183,7 @@
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
       stream.getVideoTracks().forEach((t) => t.stop()); // we only want the audio
       const tracks = stream.getAudioTracks();
-      if (!tracks.length) { chaaya.log('system audio: no loopback track (macOS loopback unsupported here)'); stream.getTracks().forEach((t) => t.stop()); return; }
+      if (!tracks.length) { prochame.log('system audio: no loopback track (macOS loopback unsupported here)'); stream.getTracks().forEach((t) => t.stop()); return; }
       sysStream = stream;
       sysCtx = new AudioContext({ sampleRate: 16000 });
       sysNode = sysCtx.createMediaStreamSource(new MediaStream(tracks));
@@ -194,11 +194,11 @@
         const f = e.inputBuffer.getChannelData(0);
         const out = new Int16Array(f.length);
         for (let i = 0; i < f.length; i++) { const s = Math.max(-1, Math.min(1, f[i])); out[i] = s < 0 ? s * 0x8000 : s * 0x7fff; }
-        chaaya.systemPcm(out.buffer);
+        prochame.systemPcm(out.buffer);
       };
-      chaaya.log('system audio: capturing loopback');
+      prochame.log('system audio: capturing loopback');
     } catch (err) {
-      chaaya.log('system audio error: ' + (err && err.message));
+      prochame.log('system audio error: ' + (err && err.message));
     }
   }
   function stopSystemAudio() {
@@ -209,29 +209,29 @@
   }
 
   // ---- events from main --------------------------------------------------
-  chaaya.on('capture:state', ({ active }) => {
+  prochame.on('capture:state', ({ active }) => {
     $('#live-dot').classList.toggle('off', !active);
     $('#stop-btn').classList.toggle('active', active);
     if (active) { startMic(); startSystemAudio(); } else { stopMic(); stopSystemAudio(); }
   });
-  chaaya.on('llm:start', ({ userBubble, small }) => {
+  prochame.on('llm:start', ({ userBubble, small }) => {
     clearMessages();
     if (userBubble) addUserBubble(userBubble);
     startAi(!!small);
     setBusy(true);
   });
-  chaaya.on('llm:token', ({ text }) => appendToken(text));
-  chaaya.on('llm:done', () => { finalizeAi(); setBusy(false); });
-  chaaya.on('llm:error', ({ message }) => {
+  prochame.on('llm:token', ({ text }) => appendToken(text));
+  prochame.on('llm:done', () => { finalizeAi(); setBusy(false); });
+  prochame.on('llm:error', ({ message }) => {
     if (!aiEl) startAi(true);
     aiEl.dataset.raw = message; finalizeAi(); setBusy(false);
   });
   let statusTimer = null;
   function showStatus(message) {
-    let el = document.getElementById('chaaya-status');
+    let el = document.getElementById('prochame-status');
     if (!el) {
       el = document.createElement('div');
-      el.id = 'chaaya-status';
+      el.id = 'prochame-status';
       const panel = document.getElementById('panel');
       panel.insertBefore(el, document.getElementById('action-row'));
     }
@@ -240,7 +240,7 @@
     clearTimeout(statusTimer);
     statusTimer = setTimeout(() => el.classList.remove('show'), 11000);
   }
-  chaaya.on('status', ({ message }) => { chaaya.log('[status] ' + message); showStatus(message); });
+  prochame.on('status', ({ message }) => { prochame.log('[status] ' + message); showStatus(message); });
 
   // ---- settings ----------------------------------------------------------
   const scrim = $('#settings-scrim');
@@ -279,7 +279,7 @@
     if (!settings.models[settings.provider]) settings.models[settings.provider] = {};
     settings.models[settings.provider].fast = $('#model-fast').value.trim();
     settings.models[settings.provider].smart = $('#model-smart').value.trim();
-    await chaaya.settingsSet(settings);
+    await prochame.settingsSet(settings);
   }
 
   // ---- example conversation (matches the reference screenshot) ------------
@@ -300,7 +300,7 @@
 
   // ---- click-through: only the UI blocks the mouse; empty gaps pass to your screen ----
   let ignoring = null;
-  function setIgnore(v) { if (v !== ignoring) { ignoring = v; chaaya.setIgnoreMouse(v); } }
+  function setIgnore(v) { if (v !== ignoring) { ignoring = v; prochame.setIgnoreMouse(v); } }
   document.addEventListener('mousemove', (e) => {
     const el = document.elementFromPoint(e.clientX, e.clientY);
     const overUI = !!(el && el.closest && el.closest('#toolbar, #panel-wrap, #settings-scrim, #onboard-scrim'));
@@ -313,33 +313,33 @@
   const OB_STEPS = [
     {
       icon: '👋',
-      title: 'Welcome to Chaaya',
-      body: 'Chaaya is a private AI copilot that floats over your screen. It can <strong>see your screen</strong>, <strong>hear your meetings</strong>, and help you answer questions or solve coding problems — while staying hidden from most screen shares.<br><br>This quick guide gets you running in about a minute.'
+      title: 'Welcome to Prochame',
+      body: 'Prochame is a private AI copilot that floats over your screen. It can <strong>see your screen</strong>, <strong>hear your meetings</strong>, and help you answer questions or solve coding problems — while staying hidden from most screen shares.<br><br>This quick guide gets you running in about a minute.'
     },
     {
       icon: '🔐',
-      title: 'Allow Chaaya to see & hear',
-      body: 'Chaaya needs two macOS permissions. Click each button, turn <strong>Chaaya</strong> ON in the window that opens, then come back here.<ul><li><strong>Microphone</strong> — to hear you</li><li><strong>Screen Recording</strong> — to see your screen and hear meeting audio</li></ul>',
+      title: 'Allow Prochame to see & hear',
+      body: 'Prochame needs two macOS permissions. Click each button, turn <strong>Prochame</strong> ON in the window that opens, then come back here.<ul><li><strong>Microphone</strong> — to hear you</li><li><strong>Screen Recording</strong> — to see your screen and hear meeting audio</li></ul>',
       buttons: [
-        { label: 'Open Microphone settings', action: () => chaaya.openPane('x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone') },
-        { label: 'Open Screen Recording settings', action: () => chaaya.openPane('x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture') }
+        { label: 'Open Microphone settings', action: () => prochame.openPane('x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone') },
+        { label: 'Open Screen Recording settings', action: () => prochame.openPane('x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture') }
       ]
     },
     {
       icon: '🔑',
       title: 'Connect an AI provider',
-      body: 'Chaaya uses <strong>your own</strong> API key — pick <span class="hl">OpenAI</span>, <span class="hl">Anthropic</span>, or <span class="hl">Google Gemini</span>. Get a key from your provider, then paste it into Chaaya\'s Settings.<br><br><strong>Tip:</strong> the listening features need speech-to-text access (an OpenAI key with Whisper, or a Gemini key). A chat-only key still powers screen &amp; coding help.',
-      buttons: [{ label: 'Open Chaaya Settings', action: () => { finishOnboard(); openSettings(); } }]
+      body: 'Prochame uses <strong>your own</strong> API key — pick <span class="hl">OpenAI</span>, <span class="hl">Anthropic</span>, or <span class="hl">Google Gemini</span>. Get a key from your provider, then paste it into Prochame\'s Settings.<br><br><strong>Tip:</strong> the listening features need speech-to-text access (an OpenAI key with Whisper, or a Gemini key). A chat-only key still powers screen &amp; coding help.',
+      buttons: [{ label: 'Open Prochame Settings', action: () => { finishOnboard(); openSettings(); } }]
     },
     {
       icon: '🫥',
       title: 'Stay hidden in Zoom',
-      body: 'Chaaya is hidden from most screen shares automatically (Google Meet, Teams, QuickTime — nothing to do). <strong>Zoom needs one setting:</strong><br><br>Zoom → <span class="hl">Settings</span> → <span class="hl">Share Screen</span> → <span class="hl">Advanced</span> → <strong>Screen capture mode</strong> → choose <strong>“Advanced capture with window filtering.”</strong><br><br>Avoid “<strong>without</strong> window filtering” — that mode reveals Chaaya.'
+      body: 'Prochame is hidden from most screen shares automatically (Google Meet, Teams, QuickTime — nothing to do). <strong>Zoom needs one setting:</strong><br><br>Zoom → <span class="hl">Settings</span> → <span class="hl">Share Screen</span> → <span class="hl">Advanced</span> → <strong>Screen capture mode</strong> → choose <strong>“Advanced capture with window filtering.”</strong><br><br>Avoid “<strong>without</strong> window filtering” — that mode reveals Prochame.'
     },
     {
       icon: '✨',
       title: 'You’re all set',
-      body: 'How to use Chaaya:<ul><li><span class="kbd">⌘</span> <span class="kbd">↵</span> — <strong>Assist</strong> with whatever\'s on screen or being said</li><li><span class="kbd">⌘</span> <span class="kbd">H</span> — solve a coding problem on screen</li><li>Click <strong>▢</strong> in the top bar to start listening to a meeting</li><li>Type a question and press <span class="kbd">↵</span></li></ul>Reopen this guide anytime by clicking the <strong>Chaaya logo</strong>. Quit with <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">X</span>.'
+      body: 'How to use Prochame:<ul><li><span class="kbd">⌘</span> <span class="kbd">↵</span> — <strong>Assist</strong> with whatever\'s on screen or being said</li><li><span class="kbd">⌘</span> <span class="kbd">H</span> — solve a coding problem on screen</li><li>Click <strong>▢</strong> in the top bar to start listening to a meeting</li><li>Type a question and press <span class="kbd">↵</span></li></ul>Reopen this guide anytime by clicking the <strong>Prochame logo</strong>. Quit with <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">X</span>.'
     }
   ];
   let obIndex = 0;
@@ -359,7 +359,7 @@
   function showOnboard() { obIndex = 0; renderOnboard(); obScrim.classList.remove('hidden'); setIgnore(false); }
   async function finishOnboard() {
     obScrim.classList.add('hidden');
-    if (settings && !settings.onboarded) { settings.onboarded = true; await chaaya.settingsSet({ onboarded: true }); }
+    if (settings && !settings.onboarded) { settings.onboarded = true; await prochame.settingsSet({ onboarded: true }); }
   }
   $('#ob-next').addEventListener('click', () => { if (obIndex === OB_STEPS.length - 1) finishOnboard(); else { obIndex++; renderOnboard(); } });
   $('#ob-back').addEventListener('click', () => { if (obIndex > 0) { obIndex--; renderOnboard(); } });
@@ -368,11 +368,11 @@
 
   // ---- boot --------------------------------------------------------------
   (async function boot() {
-    settings = await chaaya.settingsGet();
+    settings = await prochame.settingsGet();
     smartBtn.classList.toggle('on', !!settings.smart);
     showExample();
     syncPlaceholder();
-    const st = await chaaya.captureState();
+    const st = await prochame.captureState();
     $('#live-dot').classList.toggle('off', !st.active);
     $('#stop-btn').classList.toggle('active', st.active);
     if (!settings.onboarded) showOnboard();

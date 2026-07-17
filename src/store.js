@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { app } = require('electron');
 
-const FILE = path.join(app.getPath('userData'), 'chaaya-data.json');
+const FILE = path.join(app.getPath('userData'), 'prochame-data.json');
 
 const DEFAULTS = {
   provider: 'openai',

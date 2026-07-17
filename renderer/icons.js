@@ -1,4 +1,4 @@
-// Inlined Lucide icon paths (MIT, lucide.dev) + Chaaya's own logo glyph.
+// Inlined Lucide icon paths (MIT, lucide.dev) + Prochame's own logo glyph.
 // icon(name, {size, stroke, fill}) -> SVG markup string.
 (function () {
   const P = {
@@ -16,7 +16,7 @@
     play: '<path d="M6 4.5v15a1 1 0 0 0 1.5.87l12-7.5a1 1 0 0 0 0-1.74l-12-7.5A1 1 0 0 0 6 4.5z"/>',
     'stop-square': '<rect x="5" y="5" width="14" height="14" rx="3.5"/>'
   };
-  // Chaaya logo — a pinwheel/compass mark inside a ring.
+  // Prochame logo — a pinwheel/compass mark inside a ring.
   const LOGO = '<svg viewBox="0 0 24 24" width="SIZE" height="SIZE" fill="none" xmlns="http://www.w3.org/2000/svg">' +
     '<circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="1.6"/>' +
     '<path d="M12 12 6.5 8.2a6.6 6.6 0 0 1 5.5-2.9V12z" fill="currentColor"/>' +

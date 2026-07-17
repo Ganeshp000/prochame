@@ -45,8 +45,8 @@ function createWindow() {
     }
   });
 
-  // Invisibility + overlay behavior. Set CHAAYA_NO_PROTECT=1 to disable for debugging.
-  win.setContentProtection(!process.env.CHAAYA_NO_PROTECT);            // excluded from screen capture (best-effort)
+  // Invisibility + overlay behavior. Set PROCHAME_NO_PROTECT=1 to disable for debugging.
+  win.setContentProtection(!process.env.PROCHAME_NO_PROTECT);            // excluded from screen capture (best-effort)
   win.setAlwaysOnTop(true, 'screen-saver', 1);
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   if (typeof win.setHiddenInMissionControl === 'function') win.setHiddenInMissionControl(true);
@@ -54,7 +54,7 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
   win.webContents.on('did-finish-load', () => win.showInactive());
-  win.webContents.on('render-process-gone', (_e, d) => console.log('[chaaya] renderer gone', JSON.stringify(d)));
+  win.webContents.on('render-process-gone', (_e, d) => console.log('[prochame] renderer gone', JSON.stringify(d)));
 }
 
 // -------- STT flushing --------
@@ -112,8 +112,8 @@ function stopFlushLoop() { if (flushTimer) { clearInterval(flushTimer); flushTim
 
 // -------- capture toggle --------
 // Mic + system audio are both captured in the RENDERER (getUserMedia for the mic,
-// getDisplayMedia loopback for system audio) so they run inside Chaaya's own process
-// and use Chaaya's own Screen-Recording grant — no separate helper binary to authorize.
+// getDisplayMedia loopback for system audio) so they run inside Prochame's own process
+// and use Prochame's own Screen-Recording grant — no separate helper binary to authorize.
 function setCapturing(active) {
   state.capturing = active;
   if (active) {
@@ -146,7 +146,7 @@ async function runFeature(mode, userText) {
     let imageDataUrl = null;
     if (def.needsScreen) {
       try { imageDataUrl = await captureScreenshot(); }
-      catch (e) { send('status', { message: 'Screen capture needs permission — grant Screen Recording to Chaaya in System Settings.' }); }
+      catch (e) { send('status', { message: 'Screen capture needs permission — grant Screen Recording to Prochame in System Settings.' }); }
     }
 
     const built = def.build({ transcript, userText: userText || '' });
@@ -192,7 +192,7 @@ app.whenReady().then(() => {
   session.defaultSession.setPermissionCheckHandler((_wc, permission) => allowMedia(permission));
 
   // System-audio loopback for getDisplayMedia: hand back a screen source with 'loopback'
-  // audio so the renderer can capture what's playing (Zoom/Meet) using Chaaya's own grant.
+  // audio so the renderer can capture what's playing (Zoom/Meet) using Prochame's own grant.
   session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
     desktopCapturer.getSources({ types: ['screen'] }).then((sources) => {
       if (sources.length) callback({ video: sources[0], audio: 'loopback' });

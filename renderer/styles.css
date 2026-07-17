@@ -1,4 +1,4 @@
-/* Chaaya — glassmorphism overlay. */
+/* Prochame — glassmorphism overlay. */
 
 :root {
   --accent: #3C83F5;
@@ -141,10 +141,10 @@ button:focus { outline: none; }
 .ai-text p code { background: rgba(255,255,255,0.10); padding: 1px 5px; border-radius: 5px; }
 .ai-caret { display:inline-block; width:7px; height:1.05em; vertical-align:-2px; background: var(--accent); border-radius:1px; animation: blink 1s step-end infinite; margin-left: 2px; }
 .status-line { color: var(--tx-mut); font-size: 13px; margin: 10px 0 2px; }
-#chaaya-status { display: none; margin: 8px 0 2px; padding: 8px 12px; border-radius: 10px;
+#prochame-status { display: none; margin: 8px 0 2px; padding: 8px 12px; border-radius: 10px;
   background: rgba(60,131,245,0.12); border: 1px solid rgba(60,131,245,0.30);
   color: #bcd4fb; font-size: 12.5px; line-height: 1.45; -webkit-user-select: text; user-select: text; }
-#chaaya-status.show { display: block; animation: fadeUp 200ms ease both; }
+#prochame-status.show { display: block; animation: fadeUp 200ms ease both; }
 
 /* ============================ Action row ============================ */
 #action-row {

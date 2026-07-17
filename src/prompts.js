@@ -13,7 +13,7 @@ const MODES = {
     userBubble: null,
     small: false,
     system:
-      'You are Chaaya, a discreet real-time copilot overlaid on the user\'s screen during a call or coding session. ' +
+      'You are Prochame, a discreet real-time copilot overlaid on the user\'s screen during a call or coding session. ' +
       'Look at the screenshot and the recent conversation, decide what the user needs RIGHT NOW, and deliver it directly with no preamble. ' +
       'If the screen shows a coding/LeetCode problem: give a short approach, then a correct solution in a fenced code block, then time and space complexity. ' +
       'If it is a conversation: answer the current question or say exactly what the user should say next, in the first person. ' +
@@ -30,12 +30,12 @@ const MODES = {
     userBubble: 'What should I say?',
     small: false,
     system:
-      'You are Chaaya, whispering suggested replies to the user during a live conversation. ' +
+      'You are Prochame, whispering suggested replies to the user during a live conversation. ' +
       '"Them" is the other person; "You" is the user. Based on what Them just said and what You already said, ' +
       'draft ONE short, natural, confident reply the user can say out loud, in the first person. No quotes, no preamble, 1–3 sentences.',
     build(ctx) {
       const t = formatTranscript(ctx.transcript, 14);
-      return 'Conversation so far:\n' + (t || '(nothing heard yet — the user opened Chaaya without audio)') +
+      return 'Conversation so far:\n' + (t || '(nothing heard yet — the user opened Prochame without audio)') +
         '\n\nWhat should I say next?';
     }
   },
@@ -46,7 +46,7 @@ const MODES = {
     userBubble: 'Follow-up questions',
     small: true,
     system:
-      'You are Chaaya. Given the conversation, suggest 2–4 sharp, relevant follow-up questions the user could ask next ' +
+      'You are Prochame. Given the conversation, suggest 2–4 sharp, relevant follow-up questions the user could ask next ' +
       'to sound engaged and drive the discussion. Return them as a short bullet list, nothing else.',
     build(ctx) {
       const t = formatTranscript(ctx.transcript, 20);
@@ -60,7 +60,7 @@ const MODES = {
     userBubble: 'Recap',
     small: true,
     system:
-      'You are Chaaya. Summarize the conversation so far for someone who joined late: ' +
+      'You are Prochame. Summarize the conversation so far for someone who joined late: ' +
       'a few key points, any decisions, and action items. Use short bullets under bold headers. Be brief.',
     build(ctx) {
       const t = formatTranscript(ctx.transcript, 0);
@@ -74,7 +74,7 @@ const MODES = {
     userBubble: null, // uses the typed text as the bubble
     small: false,
     system:
-      'You are Chaaya, a real-time copilot with access to the user\'s screen and live conversation. ' +
+      'You are Prochame, a real-time copilot with access to the user\'s screen and live conversation. ' +
       'Answer the user\'s question directly and concisely, grounded in what is on screen and what was said. No preamble.',
     build(ctx) {
       const t = formatTranscript(ctx.transcript, 12);
