@@ -17,9 +17,13 @@ class ShortcutsManager {
       });
     }
 
-    // Tradeoff: Overrides the system default command (Cmd+V / paste) while Prochame is active.
     if (handlers.onQuickAssist) {
-      globalShortcut.register('CommandOrControl+V', () => {
+      // Primary quick assist shortcut
+      globalShortcut.register('CommandOrControl+G', () => {
+        handlers.onQuickAssist();
+      });
+      // Closest reliable alternative to double-Cmd tap (no native deps required)
+      globalShortcut.register('CommandOrControl+Shift+Space', () => {
         handlers.onQuickAssist();
       });
     }

@@ -34,7 +34,12 @@ class TranscriptionService {
       } else if (provider === 'gemini') {
         let uploadResult;
         try {
-          const ai = new GoogleGenAI({ apiKey });
+          const ai = new GoogleGenAI({ 
+            apiKey,
+            httpOptions: {
+              apiVersion: 'v1'
+            }
+          });
           uploadResult = await ai.files.upload({
             file: tempFile,
             mimeType: 'audio/wav'
@@ -55,7 +60,7 @@ class TranscriptionService {
         } catch (geminiError) {
           const errMsg = geminiError.message || String(geminiError);
           if (errMsg.includes('404') || errMsg.includes('NOT_FOUND') || errMsg.includes('exception parsing response')) {
-            throw new Error('Gemini model not found (404) -- standard model may be deprecated, check Settings.');
+            throw new Error('Gemini model not found -- it may be deprecated, check Settings');
           }
           throw geminiError;
         }

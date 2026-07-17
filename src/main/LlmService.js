@@ -128,7 +128,12 @@ class LlmService {
       }
     } else if (provider === 'gemini') {
       try {
-        const ai = new GoogleGenAI({ apiKey });
+        const ai = new GoogleGenAI({ 
+          apiKey,
+          httpOptions: {
+            apiVersion: 'v1'
+          }
+        });
         const contents = [promptText];
 
         if (imageDataUrl) {
@@ -160,7 +165,7 @@ class LlmService {
       } catch (geminiError) {
         const errMsg = geminiError.message || String(geminiError);
         if (errMsg.includes('404') || errMsg.includes('NOT_FOUND') || errMsg.includes('exception parsing response')) {
-          throw new Error('Gemini model not found (404) -- the configured model may be deprecated or disabled. Check Settings.');
+          throw new Error('Gemini model not found -- it may be deprecated, check Settings');
         }
         throw geminiError;
       }
