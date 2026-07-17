@@ -37,7 +37,7 @@ class TranscriptionService {
           const ai = new GoogleGenAI({ 
             apiKey,
             httpOptions: {
-              apiVersion: 'v1'
+              apiVersion: 'v1beta'
             }
           });
           uploadResult = await ai.files.upload({
@@ -45,7 +45,7 @@ class TranscriptionService {
             mimeType: 'audio/wav'
           });
           const resp = await ai.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-flash',
             contents: [
               uploadResult,
               { text: 'Transcribe this audio. Return ONLY the transcribed text, nothing else. If there is no talking, return nothing.' }

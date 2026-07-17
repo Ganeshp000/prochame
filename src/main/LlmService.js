@@ -131,7 +131,7 @@ class LlmService {
         const ai = new GoogleGenAI({ 
           apiKey,
           httpOptions: {
-            apiVersion: 'v1'
+            apiVersion: 'v1beta'
           }
         });
         const contents = [promptText];

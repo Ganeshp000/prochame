@@ -19,7 +19,9 @@ class IpcRouter {
     ipcMain.handle('prochame:settings:get', () => SettingsManager.get());
     ipcMain.handle('prochame:settings:set', (_event, patch) => {
       this.sttDisabledErrorShown = false; // Reset warning on key change
-      return SettingsManager.set(patch);
+      const newSettings = SettingsManager.set(patch);
+      this.validateGeminiModelsConfig(newSettings);
+      return newSettings;
     });
 
     // 2. Listening / Capture Toggle
@@ -61,6 +63,58 @@ class IpcRouter {
     ipcMain.on('prochame:log', (_event, msg) => {
       console.log('[Renderer]', msg);
     });
+
+    // Non-blocking validation on startup
+    const currentSettings = SettingsManager.get();
+    this.validateGeminiModelsConfig(currentSettings);
+  }
+
+  async validateGeminiModelsConfig(settings) {
+    const apiKey = settings.apiKeys.gemini;
+    if (!apiKey) return;
+
+    // Run this asynchronously and safely (non-blocking)
+    setTimeout(async () => {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        const response = await fetch(url);
+        if (!response.ok) return; // Silent skip if key is unauthorized/invalid
+        
+        const data = await response.json();
+        if (!data.models || !Array.isArray(data.models)) return;
+
+        const availableModels = data.models.map(m => m.name.replace('models/', ''));
+        const geminiPrefs = settings.modelPreferences.gemini;
+        let changed = false;
+
+        // Find fallback: first model in the list that contains "flash"
+        const fallbackModel = availableModels.find(name => name.toLowerCase().includes('flash-lite')) || 
+                              availableModels.find(name => name.toLowerCase().includes('flash')) || 
+                              'gemini-2.5-flash-lite';
+
+        if (!availableModels.includes(geminiPrefs.standard)) {
+          console.log(`[IpcRouter] Standard Gemini model "${geminiPrefs.standard}" not found in available models. Auto-updating.`);
+          geminiPrefs.standard = fallbackModel;
+          changed = true;
+        }
+
+        if (!availableModels.includes(geminiPrefs.advanced)) {
+          const fallbackAdvanced = availableModels.find(name => name.toLowerCase().includes('flash') && !name.toLowerCase().includes('flash-lite')) || 
+                                   fallbackModel;
+          console.log(`[IpcRouter] Advanced Gemini model "${geminiPrefs.advanced}" not found in available models. Auto-updating.`);
+          geminiPrefs.advanced = fallbackAdvanced;
+          changed = true;
+        }
+
+        if (changed) {
+          SettingsManager.set({ modelPreferences: { ...settings.modelPreferences, gemini: geminiPrefs } });
+          // Notify the UI
+          WindowManager.send('status', { message: 'Gemini model updated automatically — old model was retired.' });
+        }
+      } catch (e) {
+        console.error('[IpcRouter] Failed to validate Gemini models list:', e);
+      }
+    }, 1000);
   }
 
   startTranscriptionLoop() {
