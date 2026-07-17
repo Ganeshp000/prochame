@@ -28,7 +28,12 @@ const ONBOARD_STEPS = [
   {
     icon: '5',
     title: 'Shortcut Reference',
-    body: 'Trigger Prochame from anywhere using your keyboard: \n- Cmd + Enter -- Trigger Assist\n- Cmd + H -- Solve screen contents\n- Cmd + Shift + X -- Quit application'
+    body: 'Trigger Prochame from anywhere using your keyboard:',
+    shortcuts: [
+      { keys: ['Cmd', 'Enter'], action: 'Trigger Assist' },
+      { keys: ['Cmd', 'H'], action: 'Solve screen contents' },
+      { keys: ['Cmd', 'Shift', 'X'], action: 'Quit application' }
+    ]
   }
 ];
 
@@ -69,7 +74,29 @@ export default function OnboardingGuide({ isOpen, onClose, prochame }) {
         <div className="onboard-content">
           <div className="onboard-icon">{currentStep.icon}</div>
           <h2 className="onboard-title">{currentStep.title}</h2>
-          <p className="onboard-body">{currentStep.body}</p>
+          
+          {currentStep.shortcuts ? (
+            <div className="onboard-shortcuts-container">
+              <p className="onboard-body-title">{currentStep.body}</p>
+              <div className="onboard-shortcuts-list">
+                {currentStep.shortcuts.map((sh, idx) => (
+                  <div key={idx} className="onboard-shortcut-row">
+                    <div className="shortcut-chips">
+                      {sh.keys.map((k, kidx) => (
+                        <React.Fragment key={kidx}>
+                          <kbd className="shortcut-key-chip">{k === 'Cmd' ? '⌘' : k === 'Enter' ? '↵' : k}</kbd>
+                          {kidx < sh.keys.length - 1 && <span className="shortcut-plus">+</span>}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    <span className="shortcut-description">{sh.action}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="onboard-body">{currentStep.body}</p>
+          )}
 
           {currentStep.buttons && (
             <div className="onboard-actions-list">

@@ -1,14 +1,28 @@
 :root {
-  --background-dark: rgba(13, 16, 23, 0.78);
-  --accent-neon: #00F0FF;
-  --accent-neon-hover: #33F5FF;
-  --accent-purple: #8A2BE2;
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-muted: rgba(255, 255, 255, 0.45);
-  --border-light: rgba(255, 255, 255, 0.1);
-  --border-neon: rgba(0, 240, 255, 0.25);
-  --shadow-main: 0 16px 40px rgba(0, 0, 0, 0.5);
+  /* Minimal Dark Charcoal Glassmorphism */
+  --background-panel: rgba(18, 18, 18, 0.82);
+  --background-toolbar: rgba(18, 18, 18, 0.88);
+  --background-modal: rgba(22, 22, 22, 0.94);
+  --background-inset: rgba(255, 255, 255, 0.04);
+  --background-inset-hover: rgba(255, 255, 255, 0.08);
+  --background-inset-deep: rgba(255, 255, 255, 0.06);
   
+  /* Sparing Accent color - crisp minimal green/teal highlight used only for key items */
+  --accent-primary: #00b489;
+  --accent-primary-hover: #00d6a2;
+  
+  /* Standard neutral palette */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-on-accent: #0c0d0e;
+  
+  --border-light: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --border-accent: rgba(0, 180, 137, 0.3);
+  
+  --shadow-main: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.3);
+
   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "SF Mono", Menlo, Monaco, Consolas, monospace;
 }
@@ -43,45 +57,49 @@ html, body {
   pointer-events: auto;
 }
 
+/* Draggable Toolbar Pill */
 #toolbar {
   -webkit-app-region: drag;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: rgba(18, 22, 33, 0.9);
+  background: var(--background-toolbar);
   border: 1px solid var(--border-light);
   border-radius: 999px;
   box-shadow: var(--shadow-main);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  transition: border-color 0.2s ease;
+  backdrop-filter: blur(24px) saturate(130%);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 #toolbar:hover {
-  border-color: var(--border-neon);
+  border-color: var(--border-hover);
 }
 
 .tb-logo-btn {
   -webkit-app-region: no-drag;
   background: transparent;
   border: none;
-  color: var(--accent-neon);
+  color: var(--text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
+  opacity: 0.8;
 }
 
 .tb-logo-btn:hover {
   transform: rotate(15deg) scale(1.1);
+  color: var(--accent-primary);
+  opacity: 1;
 }
 
 .tb-divider {
   width: 1px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .tb-collapse-btn {
@@ -95,10 +113,12 @@ html, body {
   padding: 2px 6px;
   border-radius: 6px;
   transition: background 0.2s ease;
+  opacity: 0.8;
 }
 
 .tb-collapse-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--background-inset-hover);
+  opacity: 1;
 }
 
 .tb-listen-btn {
@@ -116,27 +136,28 @@ html, body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tb-listen-btn.active .status-dot {
-  background: #00FF66;
-  box-shadow: 0 0 10px #00FF66, 0 0 4px #00FF66;
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-primary), 0 0 4px var(--accent-primary);
   animation: breathe 2s infinite alternate;
 }
 
+/* Rounded rectangle Main Panel */
 .panel-glass {
   display: flex;
   flex-direction: column;
   width: min(650px, 94vw);
   margin-top: 12px;
-  background: var(--background-dark);
+  background: var(--background-panel);
   border: 1px solid var(--border-light);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: var(--shadow-main);
-  backdrop-filter: blur(30px) saturate(160%);
-  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(140%);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
   overflow: hidden;
   animation: slideUpFade 0.3s ease;
 }
@@ -144,7 +165,7 @@ html, body {
 .panel-body-container {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 20px;
 }
 
 .messages-viewport {
@@ -153,7 +174,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   padding-right: 4px;
 }
 
@@ -161,7 +182,7 @@ html, body {
   width: 4px;
 }
 .messages-viewport::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 99px;
 }
 
@@ -171,10 +192,11 @@ html, body {
 }
 
 .primary-empty-text {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 6px;
+  opacity: 0.9;
 }
 
 .secondary-empty-text {
@@ -196,22 +218,23 @@ html, body {
 }
 
 .message-bubble {
-  max-width: 80%;
+  max-width: 85%;
   padding: 10px 14px;
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.45;
   border-radius: 12px;
 }
 
 .user-bg {
-  background: var(--accent-purple);
-  color: #fff;
+  background: var(--background-inset-deep);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
   border-bottom-right-radius: 3px;
 }
 
 .assistant-bg {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   color: var(--text-primary);
   border-bottom-left-radius: 3px;
 }
@@ -224,12 +247,12 @@ html, body {
 }
 
 .bubble-code-block {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  padding: 10px;
+  padding: 12px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 12.5px;
   overflow-x: auto;
   margin: 8px 0;
 }
@@ -237,7 +260,7 @@ html, body {
 .bubble-inline-code {
   font-family: var(--font-mono);
   font-size: 13px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--background-inset-hover);
   padding: 2px 4px;
   border-radius: 4px;
 }
@@ -255,11 +278,13 @@ html, body {
   display: inline-block;
   width: 6px;
   height: 14px;
-  background: var(--accent-neon);
+  background: var(--text-primary);
   margin-left: 4px;
   animation: blink 0.8s infinite;
+  opacity: 0.8;
 }
 
+/* Pill buttons mode list */
 .quick-actions-row {
   display: flex;
   gap: 6px;
@@ -267,46 +292,50 @@ html, body {
 }
 
 .action-pill-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--background-inset);
+  border: 1px solid var(--border-light);
   color: var(--text-primary);
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s, border-color 0.2s;
+  opacity: 0.85;
 }
 
 .action-pill-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--background-inset-hover);
+  border-color: var(--border-hover);
+  opacity: 1;
 }
 
 .action-pill-btn.active {
-  background: var(--accent-neon);
-  color: #0d1017;
-  border-color: var(--accent-neon);
+  background: var(--text-primary);
+  color: var(--text-on-accent);
+  border-color: var(--text-primary);
+  opacity: 1;
 }
 
+/* Composer Panel */
 .composer-container {
   display: flex;
   flex-direction: column;
-  padding: 12px 16px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--border-light);
 }
 
 .input-textarea-wrapper {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border-light);
   border-radius: 10px;
   padding: 8px 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   transition: border-color 0.2s ease;
 }
 
 .input-textarea-wrapper:focus-within {
-  border-color: var(--accent-neon);
+  border-color: var(--border-hover);
 }
 
 .composer-textarea {
@@ -330,14 +359,20 @@ html, body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--background-inset);
+  border: 1px solid var(--border-light);
   color: var(--text-primary);
   padding: 5px 10px;
   border-radius: 999px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.smart-toggle-pill:hover {
+  background: var(--background-inset-hover);
+  opacity: 1;
 }
 
 .smart-toggle-pill .smart-indicator-glow {
@@ -349,18 +384,19 @@ html, body {
 }
 
 .smart-toggle-pill.active {
-  background: rgba(0, 240, 255, 0.08);
-  border-color: var(--accent-neon);
+  background: var(--background-inset-deep);
+  border-color: var(--border-hover);
+  opacity: 1;
 }
 
 .smart-toggle-pill.active .smart-indicator-glow {
-  background: var(--accent-neon);
-  box-shadow: 0 0 8px var(--accent-neon);
+  background: var(--text-primary);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
 }
 
 .composer-action-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--background-inset);
+  border: 1px solid var(--border-light);
   color: var(--text-primary);
   padding: 6px;
   border-radius: 8px;
@@ -369,21 +405,24 @@ html, body {
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  opacity: 0.8;
 }
 
 .composer-action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--background-inset-hover);
+  border-color: var(--border-hover);
+  opacity: 1;
 }
 
 .spacer {
   flex-grow: 1;
 }
 
+/* Primary buttons with minimal green/teal accent applied sparingly */
 .composer-send-btn {
-  background: var(--accent-neon);
+  background: var(--accent-primary);
   border: none;
-  color: #0d1017;
+  color: var(--text-on-accent);
   padding: 8px;
   border-radius: 50%;
   cursor: pointer;
@@ -394,17 +433,18 @@ html, body {
 }
 
 .composer-send-btn:hover {
-  background: var(--accent-neon-hover);
+  background: var(--accent-primary-hover);
   transform: scale(1.05);
 }
 
+/* Modals */
 .modal-scrim {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -414,10 +454,10 @@ html, body {
 }
 
 .modal-glass {
-  background: rgba(15, 20, 30, 0.92);
+  background: var(--background-modal);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-main);
-  border-radius: 24px;
+  border-radius: 20px;
   width: min(520px, 90vw);
   max-height: 90vh;
   overflow-y: auto;
@@ -443,8 +483,8 @@ html, body {
 }
 
 .modal-close-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
+  background: var(--background-inset);
+  border: 1px solid var(--border-light);
   color: var(--text-primary);
   font-size: 13px;
   font-weight: 500;
@@ -455,7 +495,7 @@ html, body {
 }
 
 .modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--background-inset-hover);
 }
 
 .setting-group {
@@ -464,7 +504,7 @@ html, body {
 
 .setting-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -494,7 +534,7 @@ html, body {
 }
 
 .provider-tab-btn.active {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--background-inset-deep);
   color: var(--text-primary);
 }
 
@@ -510,7 +550,7 @@ html, body {
 }
 
 .input-field:focus-within {
-  border-color: var(--accent-neon);
+  border-color: var(--border-hover);
 }
 
 .field-prefix {
@@ -538,7 +578,7 @@ html, body {
 .save-status-msg {
   text-align: center;
   font-size: 13px;
-  color: var(--accent-neon);
+  color: var(--accent-primary);
   margin-top: 10px;
   animation: pulse 1.5s infinite;
 }
@@ -562,13 +602,13 @@ html, body {
 }
 
 .btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--background-inset-hover);
 }
 
 .btn-save {
-  background: var(--accent-neon);
+  background: var(--accent-primary);
   border: none;
-  color: #0d1017;
+  color: var(--text-on-accent);
   padding: 8px 18px;
   border-radius: 10px;
   font-weight: 600;
@@ -578,11 +618,12 @@ html, body {
 }
 
 .btn-save:hover {
-  background: var(--accent-neon-hover);
+  background: var(--accent-primary-hover);
 }
 
+/* Onboarding Modal Design */
 .onboard-modal {
-  padding: 30px;
+  padding: 36px 30px 30px;
   text-align: center;
 }
 
@@ -590,20 +631,20 @@ html, body {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .onboard-dots .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   transition: background 0.3s;
 }
 
 .onboard-dots .dot.active {
-  background: var(--accent-neon);
-  box-shadow: 0 0 6px var(--accent-neon);
+  background: var(--text-primary);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
   width: 14px;
   border-radius: 4px;
 }
@@ -612,25 +653,103 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   margin-bottom: 30px;
 }
 
 .onboard-icon {
-  font-size: 40px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-inset-deep);
+  border: 1px solid var(--border-light);
+  border-radius: 99px;
 }
 
 .onboard-title {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  color: #ffffff;
 }
 
 .onboard-body {
   font-size: 14px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-muted);
   white-space: pre-line;
+}
+
+/* Styled Keyboard Shortcuts Chips Container */
+.onboard-shortcuts-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.onboard-body-title {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.onboard-shortcuts-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+
+.onboard-shortcut-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 13px;
+}
+
+.shortcut-chips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Rounded Box Keyboard chips */
+.shortcut-key-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--background-inset-deep);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.shortcut-plus {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.shortcut-description {
+  color: var(--text-primary);
+  opacity: 0.95;
 }
 
 .onboard-actions-list {
@@ -642,7 +761,7 @@ html, body {
 }
 
 .onboard-btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--background-inset);
   border: 1px solid var(--border-light);
   color: var(--text-primary);
   padding: 10px;
@@ -653,13 +772,14 @@ html, body {
 }
 
 .onboard-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--background-inset-hover);
+  border-color: var(--border-hover);
 }
 
 .onboard-footer {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .btn-skip {
@@ -668,6 +788,11 @@ html, body {
   color: var(--text-muted);
   cursor: pointer;
   font-size: 13px;
+  transition: color 0.2s;
+}
+
+.btn-skip:hover {
+  color: var(--text-primary);
 }
 
 .btn-back {
@@ -677,12 +802,18 @@ html, body {
   cursor: pointer;
   font-size: 13px;
   margin-right: 12px;
+  opacity: 0.8;
 }
 
+.btn-back:hover {
+  opacity: 1;
+}
+
+/* Next Button with Primary Accent sparingly applied */
 .btn-next {
-  background: var(--accent-neon);
+  background: var(--accent-primary);
   border: none;
-  color: #0d1017;
+  color: var(--text-on-accent);
   padding: 8px 20px;
   border-radius: 10px;
   font-weight: 600;
@@ -692,13 +823,13 @@ html, body {
 }
 
 .btn-next:hover {
-  background: var(--accent-neon-hover);
+  background: var(--accent-primary-hover);
 }
 
 .status-message-bar {
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid var(--accent-neon);
-  color: var(--accent-neon);
+  background: rgba(0, 180, 137, 0.08);
+  border: 1px solid var(--accent-primary);
+  color: var(--text-primary);
   font-size: 12px;
   padding: 6px 14px;
   border-radius: 8px;
@@ -707,12 +838,12 @@ html, body {
   text-align: center;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-soft);
 }
 
 @keyframes breathe {
-  from { box-shadow: 0 0 6px rgba(0,255,102,0.4); }
-  to { box-shadow: 0 0 16px rgba(0,255,102,0.8); }
+  from { box-shadow: 0 0 6px rgba(0, 180, 137, 0.3); }
+  to { box-shadow: 0 0 16px rgba(0, 180, 137, 0.6); }
 }
 
 @keyframes blink {
