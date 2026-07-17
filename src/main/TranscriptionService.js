@@ -32,24 +32,33 @@ class TranscriptionService {
         });
         return resp.text || '';
       } else if (provider === 'gemini') {
-        const ai = new GoogleGenAI({ apiKey });
-        const uploadResult = await ai.files.upload({
-          file: tempFile,
-          mimeType: 'audio/wav'
-        });
-        const resp = await ai.models.generateContent({
-          model: 'gemini-1.5-flash',
-          contents: [
-            uploadResult,
-            { text: 'Transcribe this audio. Return ONLY the transcribed text, nothing else. If there is no talking, return nothing.' }
-          ]
-        });
+        let uploadResult;
         try {
-          await ai.files.delete({ name: uploadResult.name });
-        } catch (delError) {
-          console.warn('[TranscriptionService] Failed to delete remote Gemini file:', delError);
+          const ai = new GoogleGenAI({ apiKey });
+          uploadResult = await ai.files.upload({
+            file: tempFile,
+            mimeType: 'audio/wav'
+          });
+          const resp = await ai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            contents: [
+              uploadResult,
+              { text: 'Transcribe this audio. Return ONLY the transcribed text, nothing else. If there is no talking, return nothing.' }
+            ]
+          });
+          try {
+            await ai.files.delete({ name: uploadResult.name });
+          } catch (delError) {
+            console.warn('[TranscriptionService] Failed to delete remote Gemini file:', delError);
+          }
+          return resp.text ? resp.text.trim() : '';
+        } catch (geminiError) {
+          const errMsg = geminiError.message || String(geminiError);
+          if (errMsg.includes('404') || errMsg.includes('NOT_FOUND') || errMsg.includes('exception parsing response')) {
+            throw new Error('Gemini model not found (404) -- standard model may be deprecated, check Settings.');
+          }
+          throw geminiError;
         }
-        return resp.text ? resp.text.trim() : '';
       } else {
         throw new Error(`Unsupported transcription provider: ${provider}`);
       }

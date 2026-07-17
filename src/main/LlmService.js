@@ -127,34 +127,42 @@ class LlmService {
         }
       }
     } else if (provider === 'gemini') {
-      const ai = new GoogleGenAI({ apiKey });
-      const contents = [promptText];
+      try {
+        const ai = new GoogleGenAI({ apiKey });
+        const contents = [promptText];
 
-      if (imageDataUrl) {
-        const match = imageDataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
-        if (match) {
-          const mediaType = match[1];
-          const base64Data = match[2];
-          contents.push({
-            inlineData: {
-              mimeType: mediaType,
-              data: base64Data
-            }
-          });
+        if (imageDataUrl) {
+          const match = imageDataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+          if (match) {
+            const mediaType = match[1];
+            const base64Data = match[2];
+            contents.push({
+              inlineData: {
+                mimeType: mediaType,
+                data: base64Data
+              }
+            });
+          }
         }
-      }
 
-      const responseStream = await ai.models.generateContentStream({
-        model: model,
-        contents: contents,
-        config: {
-          systemInstruction: systemPrompt
+        const responseStream = await ai.models.generateContentStream({
+          model: model,
+          contents: contents,
+          config: {
+            systemInstruction: systemPrompt
+          }
+        });
+
+        for await (const chunk of responseStream) {
+          const token = chunk.text || '';
+          if (token) onToken(token);
         }
-      });
-
-      for await (const chunk of responseStream) {
-        const token = chunk.text || '';
-        if (token) onToken(token);
+      } catch (geminiError) {
+        const errMsg = geminiError.message || String(geminiError);
+        if (errMsg.includes('404') || errMsg.includes('NOT_FOUND') || errMsg.includes('exception parsing response')) {
+          throw new Error('Gemini model not found (404) -- the configured model may be deprecated or disabled. Check Settings.');
+        }
+        throw geminiError;
       }
     } else {
       throw new Error(`Unsupported model provider: ${provider}`);

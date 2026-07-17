@@ -17,7 +17,7 @@ class SettingsManager {
       modelPreferences: {
         openai: { standard: 'gpt-4o-mini', advanced: 'gpt-4o' },
         anthropic: { standard: 'claude-3-5-haiku-latest', advanced: 'claude-3-5-sonnet-latest' },
-        gemini: { standard: 'gemini-1.5-flash', advanced: 'gemini-1.5-pro' }
+        gemini: { standard: 'gemini-2.0-flash', advanced: 'gemini-2.0-flash' }
       }
     };
     this.settings = null;
@@ -30,6 +30,17 @@ class SettingsManager {
         const raw = fs.readFileSync(this.filePath, 'utf8');
         const parsed = JSON.parse(raw);
         this.settings = this.mergeDeep(this.defaults, parsed);
+
+        // Migrate deprecated Gemini models to gemini-2.0-flash
+        if (this.settings.modelPreferences && this.settings.modelPreferences.gemini) {
+          const geminiPrefs = this.settings.modelPreferences.gemini;
+          if (geminiPrefs.standard === 'gemini-1.5-flash' || !geminiPrefs.standard) {
+            geminiPrefs.standard = 'gemini-2.0-flash';
+          }
+          if (geminiPrefs.advanced === 'gemini-1.5-pro' || !geminiPrefs.advanced) {
+            geminiPrefs.advanced = 'gemini-2.0-flash';
+          }
+        }
       } else {
         this.settings = { ...this.defaults };
       }
