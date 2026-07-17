@@ -1,0 +1,57 @@
+{
+  "name": "chaaya",
+  "version": "0.1.0",
+  "description": "Chaaya — open-source macOS invisible AI overlay — three separate inputs (screen, mic, system audio) into an LLM. Free, self-hosted AI copilot. Forked from cue (Blueturboguy07/cue).",
+  "license": "GPL-3.0-or-later",
+  "author": "Ganeshp000",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --mac zip"
+  },
+  "build": {
+    "appId": "com.chaaya.overlay",
+    "productName": "Chaaya",
+    "asar": false,
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "renderer/**/*"
+    ],
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "extendInfo": {
+        "LSUIElement": true,
+        "NSMicrophoneUsageDescription": "Chaaya transcribes your microphone so it can help you in conversations.",
+        "NSCameraUsageDescription": "Chaaya does not use the camera.",
+        "NSAudioCaptureUsageDescription": "Chaaya captures system audio to transcribe the other participant in a call."
+      }
+    }
+  },
+  "keywords": [
+    "electron",
+    "overlay",
+    "ai",
+    "assistant",
+    "screencapturekit",
+    "macos"
+  ],
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@google/genai": "^0.3.0",
+    "lucide-static": "^0.468.0",
+    "openai": "^4.73.0"
+  }
+}
