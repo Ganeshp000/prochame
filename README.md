@@ -75,8 +75,6 @@ xattr -cr /Applications/Prochame.app
 
 Upon opening the application, you will be greeted by the onboarding guide containing active keyboard hotkeys.
 
-![Prochame Onboarding](docs/tutorial.png)
-
 1. **System Permissions**: Go to `System Settings → Privacy & Security`. Grant **Microphone** and **Screen Recording** access to Prochame.
 2. **Zoom Configuration**: To hide Prochame in Zoom, open Zoom Settings, navigate to `Share Screen → Advanced`, and set **Screen capture mode** to `"Advanced capture with window filtering."`
 
