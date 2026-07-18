@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 
+// Detect platform for shortcut display: show Ctrl on Windows, ⌘ on macOS
+const isMac = typeof navigator !== 'undefined' &&
+  (navigator.userAgentData?.platform === 'macOS' || /Mac/.test(navigator.platform));
+const modKey = isMac ? 'Cmd' : 'Ctrl';
+const modSymbol = isMac ? '⌘' : 'Ctrl';
+
 const ONBOARD_STEPS = [
   {
     icon: '1',
@@ -9,11 +15,15 @@ const ONBOARD_STEPS = [
   {
     icon: '2',
     title: 'Configure Permissions',
-    body: 'To enable capture features, Prochame requires standard macOS permissions. If prompted, please click Allow, or toggle them manually in System Settings.',
-    buttons: [
-      { label: 'Microphone Privacy Settings', action: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone' },
-      { label: 'Screen Recording Privacy Settings', action: 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture' }
-    ]
+    body: isMac
+      ? 'To enable capture features, Prochame requires standard macOS permissions. If prompted, please click Allow, or toggle them manually in System Settings.'
+      : 'Prochame uses standard Windows APIs for screen capture and microphone access. You may see permission prompts from Windows — please click Allow to enable capture features.',
+    buttons: isMac
+      ? [
+          { label: 'Microphone Privacy Settings', action: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone' },
+          { label: 'Screen Recording Privacy Settings', action: 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture' }
+        ]
+      : undefined
   },
   {
     icon: '3',
@@ -22,17 +32,19 @@ const ONBOARD_STEPS = [
   },
   {
     icon: '4',
-    title: 'Zoom Invisibility',
-    body: 'Prochame is automatically hidden in Google Meet and Microsoft Teams. For Zoom, go to Zoom Settings > Share Screen > Advanced and choose "Advanced capture with window filtering" to protect overlay privacy.'
+    title: isMac ? 'Zoom Invisibility' : 'Screen Share Invisibility',
+    body: isMac
+      ? 'Prochame is automatically hidden in Google Meet and Microsoft Teams. For Zoom, go to Zoom Settings > Share Screen > Advanced and choose "Advanced capture with window filtering" to protect overlay privacy.'
+      : 'Prochame uses Windows content protection to hide from most screen capture tools. On Windows 10 version 2004 or later, the overlay is fully invisible to screen shares and recording tools. On older versions, it may appear as a black rectangle.'
   },
   {
     icon: '5',
     title: 'Shortcut Reference',
     body: 'Trigger Prochame from anywhere using your keyboard:',
     shortcuts: [
-      { keys: ['Cmd', 'Enter'], action: 'Trigger Assist' },
-      { keys: ['Cmd', 'H'], action: 'Solve screen contents' },
-      { keys: ['Cmd', 'Shift', 'X'], action: 'Quit application' }
+      { keys: [modKey, 'Enter'], action: 'Trigger Assist' },
+      { keys: [modKey, 'H'], action: 'Solve screen contents' },
+      { keys: [modKey, 'Shift', 'X'], action: 'Quit application' }
     ]
   }
 ];
@@ -62,6 +74,18 @@ export default function OnboardingGuide({ isOpen, onClose, prochame }) {
     prochame.openUrl(paneUrl);
   };
 
+  /**
+   * Render the modifier key symbol.
+   * On macOS: 'Cmd' → '⌘', 'Enter' → '↵'
+   * On Windows: 'Ctrl' → 'Ctrl', 'Enter' → '↵'
+   */
+  const renderKeyLabel = (key) => {
+    if (key === 'Cmd') return modSymbol;
+    if (key === 'Ctrl') return 'Ctrl';
+    if (key === 'Enter') return '↵';
+    return key;
+  };
+
   return (
     <div className="modal-scrim">
       <div className="onboard-modal modal-glass animate-pop">
@@ -84,7 +108,7 @@ export default function OnboardingGuide({ isOpen, onClose, prochame }) {
                     <div className="shortcut-chips">
                       {sh.keys.map((k, kidx) => (
                         <React.Fragment key={kidx}>
-                          <kbd className="shortcut-key-chip">{k === 'Cmd' ? '⌘' : k === 'Enter' ? '↵' : k}</kbd>
+                          <kbd className="shortcut-key-chip">{renderKeyLabel(k)}</kbd>
                           {kidx < sh.keys.length - 1 && <span className="shortcut-plus">+</span>}
                         </React.Fragment>
                       ))}

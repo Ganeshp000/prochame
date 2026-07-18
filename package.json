@@ -1,7 +1,7 @@
 {
   "name": "prochame",
   "version": "1.0.0",
-  "description": "Prochame — A clean, modular, and privacy-first macOS overlay copilot that helps you in live calls and coding tasks.",
+  "description": "Prochame — A clean, modular, and privacy-first desktop overlay copilot that helps you in live calls and coding tasks.",
   "main": "src/main/index.js",
   "author": "Ganeshp000",
   "license": "MIT",
@@ -9,7 +9,8 @@
     "dev": "vite",
     "build": "vite build",
     "start": "electron .",
-    "pack": "npm run build && electron-builder"
+    "pack": "npm run build && electron-builder",
+    "pack:win": "npm run build && electron-builder --win"
   },
   "build": {
     "appId": "com.prochame.app",
@@ -35,6 +36,21 @@
         "NSCameraUsageDescription": "Prochame does not use the camera.",
         "NSAudioCaptureUsageDescription": "Prochame requires system audio access to capture and transcribe the other side of a call."
       }
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "docs/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false
     }
   },
   "dependencies": {
