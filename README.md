@@ -127,7 +127,6 @@ git push origin v1.0.0
 
 Upon opening the application, you will be greeted by the onboarding guide containing active keyboard hotkeys.
 
-![Prochame Onboarding](docs/tutorial.png)
 
 ### macOS
 
