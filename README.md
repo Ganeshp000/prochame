@@ -93,6 +93,9 @@ xattr -cr /Applications/Prochame.app
 
 ### Windows
 
+> [!NOTE]
+> **Prochame has been actively tested on macOS.** The Windows build is provided via automated CI but has not yet been manually tested on a real Windows machine. If you run into any issues on Windows, please [open a GitHub Issue](https://github.com/Ganeshp000/prochame/issues) with details (Windows version, error message/screenshot) so it can be fixed.
+
 To build the Windows NSIS installer (`.exe`):
 ```bash
 npm run pack:win
