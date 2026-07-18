@@ -4,6 +4,9 @@
 
 ![Prochame Overlay](docs/overlay.png)
 
+> [!WARNING]
+> **Use responsibly.** Prochame's screen-share invisibility is best-effort, not guaranteed — some capture tools and phone cameras can still see it. Do not use this to violate exam proctoring rules, interview integrity, or any platform's terms of service. It's built for **personal practice, accessibility, and studying** — how you use it is your responsibility.
+
 ---
 
 ## ⚠️ Disclaimer — Please Read Before Use
