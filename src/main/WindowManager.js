@@ -62,8 +62,31 @@ class WindowManager {
       this.window.loadFile(path.join(__dirname, '../../out/index.html'));
     }
 
+    // Open DevTools automatically when PROCHAME_DEBUG=1 is set (works in production)
+    const isDebug = process.env.PROCHAME_DEBUG === '1';
+    if (isDev || isDebug) {
+      this.window.webContents.openDevTools({ mode: 'detach' });
+    }
+
     this.window.webContents.on('did-finish-load', () => {
       this.window.showInactive();
+    });
+
+    // Log load failures — critical for diagnosing white screen issues in production
+    this.window.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+      console.error(`[WindowManager] Page failed to load:`);
+      console.error(`  Error code: ${errorCode}`);
+      console.error(`  Description: ${errorDescription}`);
+      console.error(`  URL: ${validatedURL}`);
+    });
+
+    // Forward renderer console.error messages to main process stdout
+    this.window.webContents.on('console-message', (event, level, message, line, sourceId) => {
+      // level: 0=verbose, 1=info, 2=warning, 3=error
+      if (level >= 2) {
+        const tag = level === 3 ? 'ERROR' : 'WARN';
+        console.log(`[Renderer:${tag}] ${message} (${sourceId}:${line})`);
+      }
     });
 
     this.window.webContents.on('render-process-gone', (event, details) => {

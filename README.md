@@ -9,6 +9,16 @@
 
 ---
 
+## Download
+
+| Platform | File |
+|---|---|
+| macOS (Apple Silicon) | [Prochame-mac-arm64.dmg](https://github.com/Ganeshp000/prochame/releases/download/v1.0.1/Prochame-mac-arm64.dmg) |
+| Windows (x64) | [Prochame-Setup-1.0.1.exe](https://github.com/Ganeshp000/prochame/releases/download/v1.0.1/Prochame-Setup-1.0.1.exe) |
+
+> [!NOTE]
+> **Windows:** The installer is not code-signed. Windows SmartScreen may display an "unrecognized app" warning — click **"More info"** → **"Run anyway"** to proceed.
+
 ## ⚠️ Disclaimer — Please Read Before Use
 
 **Prochame's screen-invisibility is best-effort, not guaranteed.** It relies on OS-level Content Protection APIs (`setContentProtection`) and window-level flags that work with most built-in screen sharing and recording tools (Zoom, Google Meet, Microsoft Teams, QuickTime, OBS window-capture). However, some capture methods — including phone cameras pointed at your screen, certain third-party proctoring software, HDMI capture cards, and full-display OBS captures — **can still see the overlay.** Do not rely on invisibility as a certainty.

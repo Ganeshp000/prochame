@@ -22,6 +22,24 @@ app.whenReady().then(() => {
   session.defaultSession.setPermissionRequestHandler((_wc, permission, cb) => cb(allowMedia(permission)));
   session.defaultSession.setPermissionCheckHandler((_wc, permission) => allowMedia(permission));
 
+  // Dynamic Content Security Policy — adapts to dev vs production.
+  // In dev mode: allows localhost connections for Vite HMR.
+  // In production: minimal policy that works correctly with file:// on Windows
+  //   (no localhost refs that would cause silent script blocking).
+  const isDev = process.env.NODE_ENV === 'development';
+  const csp = isDev
+    ? "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; connect-src 'self' http://localhost:5173 http://localhost:* ws://localhost:*;"
+    : "default-src 'self' file:; style-src 'self' 'unsafe-inline' file:; script-src 'self' file:; img-src 'self' data: file:; connect-src 'self';";
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [csp]
+      }
+    });
+  });
+
   // 3. System audio loopback display handler
   // The 'loopback' audio option works cross-platform:
   //   - macOS: captures via CoreAudio / ScreenCaptureKit (macOS 13+)

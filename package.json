@@ -1,6 +1,6 @@
 {
   "name": "prochame",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Prochame — A clean, modular, and privacy-first desktop overlay copilot that helps you in live calls and coding tasks.",
   "main": "src/main/index.js",
   "author": "Ganeshp000",
@@ -50,7 +50,8 @@
       "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}"
     }
   },
   "dependencies": {
