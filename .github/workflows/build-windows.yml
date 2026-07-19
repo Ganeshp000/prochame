@@ -29,9 +29,7 @@ jobs:
         run: npm run build
 
       - name: Package Windows installer (NSIS)
-        run: npx electron-builder --win
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win --publish never
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
